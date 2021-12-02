@@ -11,7 +11,6 @@ app.use(express.json());
 app.use(cors());
 
 morgan.token('data', (req, res) => JSON.stringify(req.body));
-
 app.use(
   morgan(':method :url :status :res[content-length] - :response-time ms :data')
 );
@@ -98,6 +97,8 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === 'CastError') {
     return res.status(400).send({ error: 'malformed id' });
+  } else if (err.name === 'ValidationError') {
+    return res.status(400).json({ error: err.message });
   }
 
   next(err);
